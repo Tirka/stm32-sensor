@@ -9,11 +9,32 @@ use panic_halt as _; // you can put a breakpoint on `rust_begin_unwind` to catch
 
 use cortex_m::asm;
 use cortex_m_rt::entry;
+use stm32f4xx_hal as hal;
+// use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
-    asm::nop(); // To not have main optimize to abort in release mode, remove when you add code
-
+    let peripherals = hal::stm32::Peripherals::take().unwrap();
+    
+    peripherals.RCC.ahb1enr.write(|w| w.gpioden().set_bit());
+    
+    peripherals.GPIOD.moder.write(|w| w
+        .moder12().bits(1u8)
+        .moder13().bits(1u8)
+        .moder14().bits(1u8)
+        .moder15().bits(1u8)
+    );
+    peripherals.GPIOD.otyper.write(|w| w
+        .ot12().clear_bit()
+        .ot13().clear_bit()
+        .ot14().clear_bit()
+        .ot15().clear_bit()
+    );
+    peripherals.GPIOD.odr.write(|w| w
+        .odr12().set_bit()
+        .odr14().set_bit()
+    );
+    
     loop {
         // your code goes here
     }
