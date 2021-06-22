@@ -7,7 +7,6 @@ use panic_halt as _; // you can put a breakpoint on `rust_begin_unwind` to catch
 // use panic_itm as _; // logs messages over ITM; requires ITM support
 // use panic_semihosting as _; // logs messages to the host stderr; requires a debugger
 
-use cortex_m::asm;
 use cortex_m_rt::entry;
 use stm32f4xx_hal as hal;
 // use hal::prelude::*;
@@ -15,26 +14,30 @@ use stm32f4xx_hal as hal;
 #[entry]
 fn main() -> ! {
     let peripherals = hal::stm32::Peripherals::take().unwrap();
-    
-    peripherals.RCC.ahb1enr.write(|w| w.gpioden().set_bit());
-    
+
+    peripherals.RCC.ahb1enr.write(|w| w.gpioden().enabled());
+
     peripherals.GPIOD.moder.write(|w| w
-        .moder12().bits(1u8)
-        .moder13().bits(1u8)
-        .moder14().bits(1u8)
-        .moder15().bits(1u8)
+        .moder12().output()
+        .moder13().output()
+        .moder14().output()
+        .moder15().output()
     );
+
     peripherals.GPIOD.otyper.write(|w| w
-        .ot12().clear_bit()
-        .ot13().clear_bit()
-        .ot14().clear_bit()
-        .ot15().clear_bit()
+        .ot12().push_pull()
+        .ot13().push_pull()
+        .ot14().push_pull()
+        .ot15().push_pull()
     );
+
     peripherals.GPIOD.odr.write(|w| w
-        .odr12().set_bit()
-        .odr14().set_bit()
+        .odr12().high()
+        .odr13().high()
+        .odr14().high()
+        .odr15().high()
     );
-    
+
     loop {
         // your code goes here
     }
