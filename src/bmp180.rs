@@ -39,10 +39,10 @@ static ADDR_CALIB0: u8 = 0xAA;
 /// Ref. (BST-BMP180-DS000-09.pdf, p. 21)
 static MEASURE_TEMPERATURE: u8 = 0x2E;
 
-/// Temperature, measured in tenth of Celcius (i.e 217 = 21.7 °C)
+/// Temperature, measured in tenth of Celsius (i.e 217 = 21.7 °C)
 pub struct Temperature(pub i32);
 impl Temperature {
-    pub fn from_tenth_of_celcius(v: i32) -> Self { Temperature(v) }
+    pub fn from_tenth_of_celsius(v: i32) -> Self { Temperature(v) }
 }
 
 /// Pressure, measured in Pascal
@@ -116,7 +116,7 @@ pub fn get_temperature_and_pressure<I: Instance, P>(
     let x1 = (uncompensated_temperature - ac6 as i32) * ac5 as i32 / 32768;
     let x2 = mc as i32 * 2048 / (x1 + md as i32);
     let b5 = x1 + x2;
-    let true_temperature = Temperature::from_tenth_of_celcius((b5 + 8) / 16);
+    let true_temperature = Temperature::from_tenth_of_celsius((b5 + 8) / 16);
 
     // calculate true pressure
     let b6 = b5 - 4000;
