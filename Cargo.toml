@@ -4,6 +4,7 @@ edition = "2018"
 readme = "README.md"
 name = "stm32-sensor"
 version = "0.1.0"
+license = "MIT"
 
 [dependencies]
 cortex-m = "0.7.2"
